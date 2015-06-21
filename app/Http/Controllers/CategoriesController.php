@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Category;
+use Illuminate\Support\Facades\Redirect;
+
 
 class CategoriesController extends Controller
 {
@@ -16,7 +19,8 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        return view('categories.index',array('categories' => $categories ));
     }
 
     /**
@@ -26,17 +30,27 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        //
+        return view('categories.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
+     * @param  Illuminate\Http\Request  $request
      * @return Response
      */
-    public function store()
+    public function store(Requests\MiechuBlogCategoryRequest $request)
     {
-        //
+        // walidacja odbywa sie juz na poziomie klasy request ktora w razie nie powodzenia dokona redirect i stworzy error
+        // messages, akacja controllera nie zostanie nawet wykonana
+
+       // $input = $request->all();
+
+        Category::create(array(
+            'name' => $request->input('name'),
+        ));
+
+        return Redirect::route('categories.index')->with('message','category created');
     }
 
     /**
@@ -47,7 +61,8 @@ class CategoriesController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = Category::find($id);
+        return view('categories.show',array('category' => $category ));
     }
 
     /**
@@ -58,18 +73,26 @@ class CategoriesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $category = Category::find($id);
+        return view('categories.edit',array('category' => $category ));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  int  $id
+     * @param  Illuminate\Http\Request  $request
      * @return Response
      */
-    public function update($id)
+    public function update($id, Requests\MiechuBlogCategoryRequest $request)
     {
-        //
+        $category = Category::find($id);
+
+        $category->name = $request->input('name');
+
+        $category->update();
+
+        return Redirect::route('categories.index')->with('message','category updated    ');
     }
 
     /**
@@ -80,6 +103,9 @@ class CategoriesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = Category::find($id);
+        $category->delete();
+
+        return Redirect::route('categories.index')->with('message','category deleted');
     }
 }
