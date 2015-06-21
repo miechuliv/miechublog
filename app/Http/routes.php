@@ -15,5 +15,9 @@
     return view('welcome');
 });*/
 
+Route::controllers([
+    'auth' => 'Auth\AuthController',
+    'password' => 'Auth\PasswordController',
+]);
 
-Route::resource('categories', 'CategoriesController');
+Route::resource('categories', 'CategoriesController',['middleware' => 'auth']);

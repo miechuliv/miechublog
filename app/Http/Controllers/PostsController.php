@@ -6,17 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Category;
-use Illuminate\Support\Facades\Redirect;
 
-
-class CategoriesController extends Controller
+class PostsController extends Controller
 {
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -24,8 +16,8 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return view('categories.index',array('categories' => $categories ));
+        $posts = Post::all();
+        return view('posts.index',array('posts' => $posts ));
     }
 
     /**
@@ -35,7 +27,7 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        return view('posts.create');
     }
 
     /**
@@ -44,18 +36,18 @@ class CategoriesController extends Controller
      * @param  Illuminate\Http\Request  $request
      * @return Response
      */
-    public function store(Requests\MiechuBlogCategoryRequest $request)
+    public function store(Requests\MiechuBlogPostRequest $request)
     {
         // walidacja odbywa sie juz na poziomie klasy request ktora w razie nie powodzenia dokona redirect i stworzy error
         // messages, akacja controllera nie zostanie nawet wykonana
 
-       // $input = $request->all();
+        // $input = $request->all();
 
-        Category::create(array(
+        Post::create(array(
             'name' => $request->input('name'),
         ));
 
-        return Redirect::route('categories.index')->with('message','category created');
+        return Redirect::route('posts.index')->with('message','post created');
     }
 
     /**
@@ -66,8 +58,8 @@ class CategoriesController extends Controller
      */
     public function show($id)
     {
-        $category = Category::find($id);
-        return view('categories.show',array('category' => $category ));
+        $post = post::find($id);
+        return view('posts.show',array('post' => $post ));
     }
 
     /**
@@ -78,8 +70,8 @@ class CategoriesController extends Controller
      */
     public function edit($id)
     {
-        $category = Category::find($id);
-        return view('categories.edit',array('category' => $category ));
+        $post = post::find($id);
+        return view('posts.edit',array('post' => $post ));
     }
 
     /**
@@ -89,15 +81,15 @@ class CategoriesController extends Controller
      * @param  Illuminate\Http\Request  $request
      * @return Response
      */
-    public function update($id, Requests\MiechuBlogCategoryRequest $request)
+    public function update($id, Requests\MiechuBlogPostRequest $request)
     {
-        $category = Category::find($id);
+        $post = post::find($id);
 
-        $category->name = $request->input('name');
+        $post->name = $request->input('name');
 
-        $category->update();
+        $post->update();
 
-        return Redirect::route('categories.index')->with('message','category updated    ');
+        return Redirect::route('posts.index')->with('message','post updated    ');
     }
 
     /**
@@ -108,9 +100,9 @@ class CategoriesController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::find($id);
-        $category->delete();
+        $post = post::find($id);
+        $post->delete();
 
-        return Redirect::route('categories.index')->with('message','category deleted');
+        return Redirect::route('posts.index')->with('message','post deleted');
     }
 }
